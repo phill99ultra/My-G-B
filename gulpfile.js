@@ -26,8 +26,10 @@ const project_folder = 'build',
     { src, dest, parallel } = require('gulp'),
     gulp                    = require('gulp'),
     plugin                  = require('gulp-load-plugins')(),
+    rupture                 = require('rupture'),
     browsersync             = require('browser-sync').create(),
-    build                   = gulp.series(html),
+    del                     = require('del'),
+    build                   = gulp.series(cleanDir, parallel(styles, html)),
     watch                   = parallel(build, watchFiles, browserSync);
 
 function browserSync() {
@@ -47,20 +49,34 @@ function html() {
 }
 
 function watchFiles() {    
-    gulp.watch([path.watch.html], html)
+    gulp.watch([path.watch.html], html);
+    gulp.watch([path.watch.css], styles);
 }
 
+function cleanDir() {
+    return del(path.clean)
+}
+
+function styles() {
+    return src(path.src.css)
+        .pipe(plugin.stylus({
+            use: rupture(),
+            compress: true
+        }))
+        .pipe(plugin.rename('style.min.css'))
+        .pipe(dest(path.build.css))
+        .pipe(browsersync.stream())
+};
+
+exports.styles  = styles;
 exports.html    = html;
 exports.build   = build;
 exports.watch   = watch; 
 exports.default = watch;
 
-// const { src, dest, watch, parallel } = require('gulp'),   
-//     rupture         = require('rupture'),
+// const { src, dest, watch, parallel } = require('gulp'),
 //     plugin          = require('gulp-load-plugins')(),
 //     browserSync     = require('browser-sync').create();
-   
-
 
 // function styles() {
 //     return src('./src/stylus/*.styl')
