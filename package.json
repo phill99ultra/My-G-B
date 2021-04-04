@@ -10,6 +10,7 @@
   "author": "Phill",
   "license": "ISC",
   "devDependencies": {
+    "autoprefixer-stylus": "^1.0.0",
     "browser-sync": "^2.26.14",
     "del": "^6.0.0",
     "gulp": "^4.0.2",

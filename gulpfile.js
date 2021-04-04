@@ -29,6 +29,7 @@ const project_folder = 'build',
     rupture                 = require('rupture'),
     browsersync             = require('browser-sync').create(),
     del                     = require('del'),
+    autoprefixer            = require('autoprefixer-stylus'),
     build                   = gulp.series(cleanDir, parallel(styles, html)),
     watch                   = parallel(build, watchFiles, browserSync);
 
@@ -59,10 +60,10 @@ function cleanDir() {
 
 function styles() {
     return src(path.src.css)
-        .pipe(plugin.stylus({
-            use: rupture(),
+        .pipe(plugin.stylus({            
+            use: [rupture(), autoprefixer('last 5 versions')],
             compress: true
-        }))
+        }))       
         .pipe(plugin.rename('style.min.css'))
         .pipe(dest(path.build.css))
         .pipe(browsersync.stream())
@@ -74,28 +75,3 @@ exports.build   = build;
 exports.watch   = watch; 
 exports.default = watch;
 
-// const { src, dest, watch, parallel } = require('gulp'),
-//     plugin          = require('gulp-load-plugins')(),
-//     browserSync     = require('browser-sync').create();
-
-// function styles() {
-//     return src('./src/stylus/*.styl')
-//         .pipe(plugin.stylus({
-//             use: rupture(),
-//             compress: true
-//         }))
-//         .pipe(plugin.rename('style.min.css'))
-//         .pipe(dest('./build/css'))
-//         .pipe(browserSync.stream())
-// };
-
-// function watching() {
-//     watch(['./src/stylus/**/*.styl'], styles);
-//     watch(['./build/*.html']).on('change', browserSync.reload)
-// }
-
-// exports.styles      = styles;
-// exports.watching    = watching;
-// exports.browsersync = browsersync;
-
-// exports.default     = parallel(watching, browsersync);
