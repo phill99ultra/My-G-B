@@ -1,5 +1,5 @@
 {
-  "name": "G-B",
+  "name": "my-gulp-project",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,6 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "Phill",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.26.14",
+    "gulp": "^4.0.2",
+    "gulp-load-plugins": "^2.0.6",
+    "gulp-rename": "^2.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-stylus": "^2.7.0",
+    "rupture": "^0.7.1"
+  }
 }
