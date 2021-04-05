@@ -27,10 +27,11 @@ const project_folder = 'build',
     gulp                    = require('gulp'),
     plugin                  = require('gulp-load-plugins')(),
     rupture                 = require('rupture'),
-    browsersync             = require('browser-sync').create(),
-    del                     = require('del'),
+    browsersync             = require('browser-sync').create(),   
     autoprefixer            = require('autoprefixer-stylus'),
-    build                   = gulp.series(cleanDir, parallel(styles, html)),
+    del                     = require('del'),
+    project                 = parallel(html, styles)
+    build                   = gulp.series(clean, project),
     watch                   = parallel(build, watchFiles, browserSync);
 
 function browserSync() {
@@ -44,7 +45,7 @@ function browserSync() {
 }
 
 function html() {
-    return src(path.src.html)
+    return src(path.src.html)       
         .pipe(dest(path.build.html))
         .pipe(browsersync.stream());
 }
@@ -54,8 +55,8 @@ function watchFiles() {
     gulp.watch([path.watch.css], styles);
 }
 
-function cleanDir() {
-    return del(path.clean)
+function clean() {
+    return del(path.clean);
 }
 
 function styles() {
@@ -71,6 +72,7 @@ function styles() {
 
 exports.styles  = styles;
 exports.html    = html;
+exports.project = project;
 exports.build   = build;
 exports.watch   = watch; 
 exports.default = watch;

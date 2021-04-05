@@ -1,1 +1,1 @@
-body{background-color:#00f}@media only screen and (max-width:1199px){body{background-color:#f00}}body .flass{display:-webkit-box;display:-ms-flexbox;display:flex}
+body{background-color:#666}@media only screen and (max-width:1199px){body{background-color:#f00}}body .flass{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}body .flass h1{color:#fff}body .flass h2{color:#00f;margin:0 auto}body ul li{color:#ee82ee}
