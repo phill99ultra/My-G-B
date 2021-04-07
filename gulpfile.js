@@ -30,8 +30,10 @@ const project_folder = 'build',
     browsersync             = require('browser-sync').create(),   
     autoprefixer            = require('autoprefixer-stylus'),
     del                     = require('del'),
-    project                 = parallel(html, styles)
-    build                   = gulp.series(clean, project),
+    clean_css               = require('gulp-clean-css'),
+    group_media_queries     = require('gulp-group-css-media-queries'),
+    //project                 = parallel(html, styles)
+    build                   = gulp.series(clean, html, styles),
     watch                   = parallel(build, watchFiles, browserSync);
 
 function browserSync() {
@@ -62,17 +64,21 @@ function clean() {
 function styles() {
     return src(path.src.css)
         .pipe(plugin.stylus({            
-            use: [rupture(), autoprefixer('last 5 versions')],
-            compress: true
-        }))       
-        .pipe(plugin.rename('style.min.css'))
+            use: [rupture(), autoprefixer({overrideBrowserslist: ['last 5 versions']})]            
+        }))  
+        .pipe(group_media_queries()) 
+        .pipe(dest(path.build.css))
+        .pipe(clean_css())   
+        .pipe(plugin.rename({
+            extname: '.min.css'})
+        )               
         .pipe(dest(path.build.css))
         .pipe(browsersync.stream())
 };
 
 exports.styles  = styles;
 exports.html    = html;
-exports.project = project;
+// exports.project = project;
 exports.build   = build;
 exports.watch   = watch; 
 exports.default = watch;
