@@ -11,7 +11,7 @@ const project_folder = 'build',
         src  : {
             html  : `${source_folder}/*.html`,
             css   : `${source_folder}/stylus/style.styl`,
-            js    : `${source_folder}/js/main.js`,
+            js    : `${source_folder}/js/*.js`,
             img   : `${source_folder}/images/**/*.{jpg,png,svg,ico,gif,wepb}`,
             fonts : `${source_folder}/fonts/*.{ttf,woff}`,
         },
@@ -32,8 +32,9 @@ const project_folder = 'build',
     del                     = require('del'),
     clean_css               = require('gulp-clean-css'),
     group_media_queries     = require('gulp-group-css-media-queries'),
-    //project                 = parallel(html, styles)
-    build                   = gulp.series(clean, html, styles),
+    uglify                  = require('gulp-uglify-es').default,
+    //project                 = parallel(js, html, styles)
+    build                   = gulp.series(clean, html, images, styles, scripts),
     watch                   = parallel(build, watchFiles, browserSync);
 
 function browserSync() {
@@ -52,9 +53,50 @@ function html() {
         .pipe(browsersync.stream());
 }
 
+function images() {
+    return src(path.src.img) 
+        .pipe(
+            plugin.webp({
+                quality: 70
+            })
+        )
+        .pipe(dest(path.build.img))
+        .pipe(src(path.src.img))
+        .pipe(
+            plugin.imagemin({
+                interlaced: true,
+                progressive: true,
+                optimizationLevel: 5,
+                svgoPlugins: [
+                    {
+                        removeViewBox: true
+                    }
+                ]
+            })
+        )      
+        .pipe(dest(path.build.img))
+        .pipe(browsersync.stream());
+}
+
+function scripts() {
+    return src(path.src.js)   
+        .pipe(plugin.concat('main.js'))    
+        .pipe(dest(path.build.js))
+        .pipe(
+            uglify()
+        )
+        .pipe(plugin.rename({
+            extname: '.min.js'})
+        ) 
+        .pipe(dest(path.build.js)) 
+        .pipe(browsersync.stream());
+}
+
 function watchFiles() {    
     gulp.watch([path.watch.html], html);
     gulp.watch([path.watch.css], styles);
+    gulp.watch([path.watch.js], scripts);
+    gulp.watch([path.watch.img], images);
 }
 
 function clean() {
@@ -78,6 +120,8 @@ function styles() {
 
 exports.styles  = styles;
 exports.html    = html;
+exports.scripts = scripts;
+exports.images  = images;
 // exports.project = project;
 exports.build   = build;
 exports.watch   = watch; 
