@@ -33,8 +33,11 @@ const project_folder = 'build',
     clean_css               = require('gulp-clean-css'),
     group_media_queries     = require('gulp-group-css-media-queries'),
     uglify                  = require('gulp-uglify-es').default,
+    webp_html               = require('gulp-webp-html'),
+    webp_css                 = require('gulp-webp-css'),
+    svg_sprite               = require('gulp-svg-sprite'),
     //project                 = parallel(js, html, styles)
-    build                   = gulp.series(clean, html, images, styles, scripts),
+    build                   = gulp.series(clean, html, images, parallel(styles, scripts)),
     watch                   = parallel(build, watchFiles, browserSync);
 
 function browserSync() {
@@ -48,7 +51,8 @@ function browserSync() {
 }
 
 function html() {
-    return src(path.src.html)       
+    return src(path.src.html) 
+        .pipe(webp_html())      
         .pipe(dest(path.build.html))
         .pipe(browsersync.stream());
 }
@@ -77,6 +81,19 @@ function images() {
         .pipe(dest(path.build.img))
         .pipe(browsersync.stream());
 }
+
+gulp.task('svg_sprite', ()=> {
+    return gulp.src([`${source_folder}/iconsprite/*.svg`])
+        .pipe(svg_sprite({
+            mode: {
+                stack: {
+                   sprite: '../icons/icons.svg',
+                   example: true 
+                }
+            }
+        }))
+        .pipe(dest(path.build.img))
+});
 
 function scripts() {
     return src(path.src.js)   
@@ -109,6 +126,7 @@ function styles() {
             use: [rupture(), autoprefixer({overrideBrowserslist: ['last 5 versions']})]            
         }))  
         .pipe(group_media_queries()) 
+        .pipe(webp_css())
         .pipe(dest(path.build.css))
         .pipe(clean_css())   
         .pipe(plugin.rename({

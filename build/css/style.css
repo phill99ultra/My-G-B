@@ -17,12 +17,20 @@ body .flass h1 {
 }
 
 body .flass h2 {
-  color: #00f;
+  color: #008000;
   margin: 0 auto;
 }
 
 body ul li {
   color: #ee82ee;
+}
+
+body ul li .icon-box img {
+  max-height: 100px;
+}
+
+body .image-block {
+  background: url("../images/image-1.jpg") 0 0 no-repeat;
 }
 
 @media only screen and (max-width: 1199px) {
@@ -35,4 +43,23 @@ body ul li {
   body .flass h2 {
     color: #808080;
   }
+}
+@supports (-webkit-appearance:none){
+body .image-block{background:url("../images/image-1.webp") 0 0 no-repeat}
+}
+
+ @media only screen and (max-width: 1199px){
+
+@supports (-webkit-appearance:none){
+
+}
+
+}
+
+ @media only screen and (max-width: 767px){
+
+@supports (-webkit-appearance:none){
+
+}
+
 }
