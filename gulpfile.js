@@ -34,10 +34,11 @@ const project_folder = 'build',
     group_media_queries     = require('gulp-group-css-media-queries'),
     uglify                  = require('gulp-uglify-es').default,
     webp_html               = require('gulp-webp-html'),
-    webp_css                 = require('gulp-webp-css'),
-    svg_sprite               = require('gulp-svg-sprite'),
+    webp_css                = require('gulp-webp-css'),
+    svg_sprite              = require('gulp-svg-sprite'),
+    fs                      = require('fs'),
     //project                 = parallel(js, html, styles)
-    build                   = gulp.series(clean, html, images, parallel(styles, scripts)),
+    build                   = gulp.series(clean, html, parallel(styles, images, scripts, fonts)),
     watch                   = parallel(build, watchFiles, browserSync);
 
 function browserSync() {
@@ -82,6 +83,36 @@ function images() {
         .pipe(browsersync.stream());
 }
 
+function fonts() {
+    return src(path.src.fonts)
+        .pipe(plugin.ttf2woff())
+        .pipe(dest(path.build.fonts))
+}
+
+// function fontsStyle(params) {
+
+//     let file_content = fs.readFileSync(source_folder + '/scss/fonts.scss');
+//     if (file_content == '') {
+//     fs.writeFile(source_folder + '/scss/fonts.scss', '', cb);
+//     return fs.readdir(path.build.fonts, function (err, items) {
+//     if (items) {
+//     let c_fontname;
+//     for (var i = 0; i < items.length; i++) {
+//     let fontname = items[i].split('.');
+//     fontname = fontname[0];
+//     if (c_fontname != fontname) {
+//     fs.appendFile(source_folder + '/scss/fonts.scss', '@include font("' + fontname + '", "' + fontname + '", "400", "normal");\r\n', cb);
+//     }
+//     c_fontname = fontname;
+//     }
+//     }
+//     })
+//     }
+//     }
+    
+//     function cb() { }
+
+// task for minify all svg files in one in build directory
 gulp.task('svg_sprite', ()=> {
     return gulp.src([`${source_folder}/iconsprite/*.svg`])
         .pipe(svg_sprite({
@@ -93,6 +124,14 @@ gulp.task('svg_sprite', ()=> {
             }
         }))
         .pipe(dest(path.build.img))
+});
+
+gulp.task('otf2ttf', ()=> {
+    return gulp.src(`${source_folder}/fonts/*.otf`)
+        .pipe(plugin.fonter({
+            formats: ['ttf']
+        }))
+        .pipe(dest(path.src.fonts))
 });
 
 function scripts() {
@@ -136,6 +175,8 @@ function styles() {
         .pipe(browsersync.stream())
 };
 
+// exports.fontsStyle = fontsStyle;
+exports.fonts   = fonts;
 exports.styles  = styles;
 exports.html    = html;
 exports.scripts = scripts;
