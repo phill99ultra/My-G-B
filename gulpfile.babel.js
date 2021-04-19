@@ -91,9 +91,9 @@ function fonts() {
 
 // function fontsStyle(params) {
 
-//     let file_content = fs.readFileSync(source_folder + '/scss/fonts.scss');
+//     let file_content = fs.readFileSync(source_folder + '/stylus/fonts.styl');
 //     if (file_content == '') {
-//     fs.writeFile(source_folder + '/scss/fonts.scss', '', cb);
+//     fs.writeFile(source_folder + '/stylus/fonts.styl', '', cb);
 //     return fs.readdir(path.build.fonts, function (err, items) {
 //     if (items) {
 //     let c_fontname;
@@ -101,7 +101,7 @@ function fonts() {
 //     let fontname = items[i].split('.');
 //     fontname = fontname[0];
 //     if (c_fontname != fontname) {
-//     fs.appendFile(source_folder + '/scss/fonts.scss', '@include font("' + fontname + '", "' + fontname + '", "400", "normal");\r\n', cb);
+//     fs.appendFile(source_folder + '/stylus/fonts.styl', '@include font("' + fontname + '", "' + fontname + '", "400", "normal");\r\n', cb);
 //     }
 //     c_fontname = fontname;
 //     }
@@ -161,6 +161,7 @@ function clean() {
 
 function styles() {
     return src(path.src.css)
+        .pipe(plugin.sourcemaps.init())
         .pipe(plugin.stylus({            
             use: [rupture(), autoprefixer({overrideBrowserslist: ['last 5 versions']})]            
         }))  
@@ -170,7 +171,8 @@ function styles() {
         .pipe(clean_css())   
         .pipe(plugin.rename({
             extname: '.min.css'})
-        )               
+        )    
+        .pipe(plugin.sourcemaps.write('./'))           
         .pipe(dest(path.build.css))
         .pipe(browsersync.stream())
 };
