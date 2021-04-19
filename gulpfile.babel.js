@@ -135,7 +135,8 @@ gulp.task('otf2ttf', ()=> {
 });
 
 function scripts() {
-    return src(path.src.js)   
+    return src(path.src.js)
+        .pipe(plugin.sourcemaps.init())   
         .pipe(plugin.concat('main.js'))    
         .pipe(dest(path.build.js))
         .pipe(
@@ -144,6 +145,7 @@ function scripts() {
         .pipe(plugin.rename({
             extname: '.min.js'})
         ) 
+        .pipe(plugin.sourcemaps.write('./'))
         .pipe(dest(path.build.js)) 
         .pipe(browsersync.stream());
 }
