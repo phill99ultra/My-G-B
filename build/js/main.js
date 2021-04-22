@@ -1,21 +1,19 @@
-class App {
-    constructor() {
-        console.log('App initialize...');
-    }
-}
+"use strict";
 
-export default App;
-'use strict'
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// import App from 'app';
+var App = function App() {
+  _classCallCheck(this, App);
 
-const app = new App();
-const sum = (a, b) => {
-     return a + b;
-}
+  console.log('App initialize...');
+}; // export default App;
+'use strict'; // import App from './app';
+// const app = new App();
 
-console.log(sum(4, 7));
+var sum = function sum(a, b) {
+  return a + b;
+};
 
-// "eslint": "6.8.0",
+console.log(sum(4, 7)); // "eslint": "6.8.0",
 //     "eslint-config-airbnb-base": "^14.2.1",
 //     "eslint-plugin-import": "^2.22.1",

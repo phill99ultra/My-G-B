@@ -11,7 +11,7 @@ const project_folder = 'build',
         src  : {
             html  : `${source_folder}/*.html`,
             css   : `${source_folder}/stylus/style.styl`,
-            js    : `${source_folder}/js/*.js`,
+            js    : `${source_folder}/js/**/*.js`,
             img   : `${source_folder}/images/**/*.{jpg,png,svg,ico,gif,wepb}`,
             fonts : `${source_folder}/fonts/*.{ttf,woff}`,
         },
@@ -35,12 +35,12 @@ const project_folder = 'build',
     uglify                  = require('gulp-uglify-es').default,
     webp_html               = require('gulp-webp-html'),
     webp_css                = require('gulp-webp-css'),
-    svg_sprite              = require('gulp-svg-sprite'),
-    fs                      = require('fs'),
-    //project                 = parallel(js, html, styles)
+    svg_sprite              = require('gulp-svg-sprite'),   
+    fs                      = require('fs'),    
     build                   = gulp.series(clean, html, parallel(styles, images, scripts, fonts)),
     watch                   = parallel(build, watchFiles, browserSync);
 
+// Local server
 function browserSync() {
     browsersync.init({
         server : {
@@ -51,6 +51,7 @@ function browserSync() {
     });
 }
 
+// HTML
 function html() {
     return src(path.src.html) 
         .pipe(webp_html())      
@@ -58,6 +59,8 @@ function html() {
         .pipe(browsersync.stream());
 }
 
+
+// Images
 function images() {
     return src(path.src.img) 
         .pipe(
@@ -83,6 +86,7 @@ function images() {
         .pipe(browsersync.stream());
 }
 
+// Fonts
 function fonts() {
     return src(path.src.fonts)
         .pipe(plugin.ttf2woff())
@@ -136,7 +140,10 @@ gulp.task('otf2ttf', ()=> {
 
 function scripts() {
     return src(path.src.js)
-        .pipe(plugin.sourcemaps.init())   
+        .pipe(plugin.sourcemaps.init({loadMaps : true}))
+        .pipe(plugin.babel({
+            presets: ['@babel/preset-env']
+        }))          
         .pipe(plugin.concat('main.js'))    
         .pipe(dest(path.build.js))
         .pipe(
@@ -145,6 +152,9 @@ function scripts() {
         .pipe(plugin.rename({
             extname: '.min.js'})
         ) 
+        .pipe(plugin.terser({ 
+            output: { comments: false }})
+        )
         .pipe(plugin.sourcemaps.write('./'))
         .pipe(dest(path.build.js)) 
         .pipe(browsersync.stream());
@@ -185,7 +195,6 @@ exports.styles  = styles;
 exports.html    = html;
 exports.scripts = scripts;
 exports.images  = images;
-// exports.project = project;
 exports.build   = build;
 exports.watch   = watch; 
 exports.default = watch;
