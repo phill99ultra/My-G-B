@@ -9,14 +9,14 @@ const project_folder = 'build',
             fonts : `${project_folder}/fonts/`,
         },
         src  : {
-            html  : `${source_folder}/*.html`,
+            html  : `${source_folder}/pages/**/*.html`,
             css   : `${source_folder}/stylus/style.styl`,
             js    : `${source_folder}/js/**/*.js`,
             img   : `${source_folder}/images/**/*.{jpg,png,svg,ico,gif,wepb}`,
             fonts : `${source_folder}/fonts/*.{ttf,woff}`,
         },
         watch: {
-            html  : `${source_folder}/**/*.html`,
+            html  : `${source_folder}/pages/**/*.html`,
             css   : `${source_folder}/stylus/**/*.styl`,
             js    : `${source_folder}/js/**/*.js`,
             img   : `${source_folder}/images/**/*.{jpg,png,svg,ico,gif,wepb}`            
