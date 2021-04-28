@@ -173,6 +173,7 @@ function clean() {
 
 function styles() {
     return src(path.src.css)
+        .pipe(plugin.plumber())
         .pipe(plugin.sourcemaps.init())
         .pipe(plugin.stylus({            
             use: [rupture(), autoprefixer({overrideBrowserslist: ['last 5 versions']})]            
