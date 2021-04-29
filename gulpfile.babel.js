@@ -2,21 +2,24 @@ const project_folder = 'build',
     source_folder  = 'src',
     path           = {
         build: {
-            html  : `${project_folder}/`,
+            // html  : `${project_folder}/`,
+            pug  : `${project_folder}/`,
             css   : `${project_folder}/css/`,
             js    : `${project_folder}/js/`,
             img   : `${project_folder}/images/`,
             fonts : `${project_folder}/fonts/`,
         },
         src  : {
-            html  : `${source_folder}/pages/**/*.html`,
+            // html  : `${source_folder}/pages/**/*.html`,
+            pug  : `${source_folder}/pages/**/*.pug`,
             css   : `${source_folder}/stylus/style.styl`,
             js    : `${source_folder}/js/**/*.js`,
             img   : `${source_folder}/images/**/*.{jpg,png,svg,ico,gif,wepb}`,
             fonts : `${source_folder}/fonts/*.{ttf,woff}`,
         },
         watch: {
-            html  : `${source_folder}/pages/**/*.html`,
+            // html  : `${source_folder}/pages/**/*.html`,
+            pug  : `${source_folder}/pages/**/*.pug`,
             css   : `${source_folder}/stylus/**/*.styl`,
             js    : `${source_folder}/js/**/*.js`,
             img   : `${source_folder}/images/**/*.{jpg,png,svg,ico,gif,wepb}`            
@@ -37,7 +40,7 @@ const project_folder = 'build',
     webp_css                = require('gulp-webp-css'),
     svg_sprite              = require('gulp-svg-sprite'),   
     fs                      = require('fs'),    
-    build                   = gulp.series(clean, html, parallel(styles, images, scripts, fonts)),
+    build                   = gulp.series(clean, pug, parallel(styles, images, scripts, fonts)),
     watch                   = parallel(build, watchFiles, browserSync);
 
 // Local server
@@ -52,13 +55,21 @@ function browserSync() {
 }
 
 // HTML
-function html() {
-    return src(path.src.html) 
-        .pipe(webp_html())      
-        .pipe(dest(path.build.html))
+// function html() {
+//     return src(path.src.html) 
+//         .pipe(webp_html())      
+//         .pipe(dest(path.build.html))
+//         .pipe(browsersync.stream());
+// }
+
+// PUG
+function pug() {
+    return src(path.src.pug) 
+        .pipe(plugin.plumber())
+        .pipe(plugin.pug({ pretty: true }))     
+        .pipe(dest(path.build.pug))
         .pipe(browsersync.stream());
 }
-
 
 // Images
 function images() {
@@ -92,29 +103,6 @@ function fonts() {
         .pipe(plugin.ttf2woff())
         .pipe(dest(path.build.fonts))
 }
-
-// function fontsStyle(params) {
-
-//     let file_content = fs.readFileSync(source_folder + '/stylus/fonts.styl');
-//     if (file_content == '') {
-//     fs.writeFile(source_folder + '/stylus/fonts.styl', '', cb);
-//     return fs.readdir(path.build.fonts, function (err, items) {
-//     if (items) {
-//     let c_fontname;
-//     for (var i = 0; i < items.length; i++) {
-//     let fontname = items[i].split('.');
-//     fontname = fontname[0];
-//     if (c_fontname != fontname) {
-//     fs.appendFile(source_folder + '/stylus/fonts.styl', '@include font("' + fontname + '", "' + fontname + '", "400", "normal");\r\n', cb);
-//     }
-//     c_fontname = fontname;
-//     }
-//     }
-//     })
-//     }
-//     }
-    
-//     function cb() { }
 
 // task for minify all svg files in one in build directory
 gulp.task('svg_sprite', ()=> {
@@ -161,7 +149,8 @@ function scripts() {
 }
 
 function watchFiles() {    
-    gulp.watch([path.watch.html], html);
+    // gulp.watch([path.watch.html], html);
+    gulp.watch([path.watch.pug], pug);
     gulp.watch([path.watch.css], styles);
     gulp.watch([path.watch.js], scripts);
     gulp.watch([path.watch.img], images);
@@ -193,7 +182,8 @@ function styles() {
 // exports.fontsStyle = fontsStyle;
 exports.fonts   = fonts;
 exports.styles  = styles;
-exports.html    = html;
+exports.pug     = pug;
+// exports.html    = html;
 exports.scripts = scripts;
 exports.images  = images;
 exports.build   = build;
