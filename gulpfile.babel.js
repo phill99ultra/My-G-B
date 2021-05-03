@@ -1,25 +1,22 @@
 const project_folder = 'build',
     source_folder  = 'src',
     path           = {
-        build: {
-            // html  : `${project_folder}/`,
+        build: {           
             pug  : `${project_folder}/`,
             css   : `${project_folder}/css/`,
             js    : `${project_folder}/js/`,
             img   : `${project_folder}/images/`,
             fonts : `${project_folder}/fonts/`,
         },
-        src  : {
-            // html  : `${source_folder}/pages/**/*.html`,
-            pug  : `${source_folder}/pages/**/*.pug`,
+        src  : {            
+            pug  : `${source_folder}/pug/**/*.pug`,
             css   : `${source_folder}/stylus/style.styl`,
             js    : `${source_folder}/js/**/*.js`,
             img   : `${source_folder}/images/**/*.{jpg,png,svg,ico,gif,wepb}`,
             fonts : `${source_folder}/fonts/*.{ttf,woff}`,
         },
-        watch: {
-            // html  : `${source_folder}/pages/**/*.html`,
-            pug  : `${source_folder}/pages/**/*.pug`,
+        watch: {           
+            pug  : `${source_folder}/pug/**/*.pug`,
             css   : `${source_folder}/stylus/**/*.styl`,
             js    : `${source_folder}/js/**/*.js`,
             img   : `${source_folder}/images/**/*.{jpg,png,svg,ico,gif,wepb}`            
@@ -35,8 +32,7 @@ const project_folder = 'build',
     del                     = require('del'),
     clean_css               = require('gulp-clean-css'),
     group_media_queries     = require('gulp-group-css-media-queries'),
-    uglify                  = require('gulp-uglify-es').default,
-    webp_html               = require('gulp-webp-html'),
+    uglify                  = require('gulp-uglify-es').default,   
     webp_css                = require('gulp-webp-css'),
     svg_sprite              = require('gulp-svg-sprite'),   
     fs                      = require('fs'),    
@@ -53,14 +49,6 @@ function browserSync() {
         notify : false
     });
 }
-
-// HTML
-// function html() {
-//     return src(path.src.html) 
-//         .pipe(webp_html())      
-//         .pipe(dest(path.build.html))
-//         .pipe(browsersync.stream());
-// }
 
 // PUG
 function pug() {
@@ -148,8 +136,7 @@ function scripts() {
         .pipe(browsersync.stream());
 }
 
-function watchFiles() {    
-    // gulp.watch([path.watch.html], html);
+function watchFiles() {       
     gulp.watch([path.watch.pug], pug);
     gulp.watch([path.watch.css], styles);
     gulp.watch([path.watch.js], scripts);
@@ -183,7 +170,6 @@ function styles() {
 exports.fonts   = fonts;
 exports.styles  = styles;
 exports.pug     = pug;
-// exports.html    = html;
 exports.scripts = scripts;
 exports.images  = images;
 exports.build   = build;

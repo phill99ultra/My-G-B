@@ -1,26 +1,13 @@
-// @import 'mixins'
-// @import 'fonts'
+@import 'variables'
+@import 'fonts'
+@import 'mixins'   
+
+* {
+    font-family 'Montserrat-Regular' 
+}
 
 body
-    background-color #666
-    +below(+1199px)
-        background-color red
-    .flass
-        display flex
-        flex-direction column
-        h1
-            color white
-        h2
-            color green
-            margin 0 auto
-            +below(767px)
-                color gray
-    ul
-        li
-            color violet
-            .icon-box
-                img
-                    max-height 100px
-    .image-block
-        background url('../images/image-1.jpg') 0 0 no-repeat
-    
+    background-color $body-bg
+    .container
+        container($container)
+   
